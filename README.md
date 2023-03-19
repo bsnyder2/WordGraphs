@@ -1,6 +1,5 @@
-## WordGraphs
+# WordGraphs
 Tools for examining words/word relations
 
-
-# TO DO
+## To do
 - GUI
