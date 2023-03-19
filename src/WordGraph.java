@@ -4,18 +4,31 @@ import java.util.HashSet;
 
 public class WordGraph {
     private static final char[] alphabet = "abcdefghijklmnopqrstuvwxyz".toCharArray();
-    private HashSet<String> validWords;
-    private HashMap<String, Vertex> map;
+    private final HashSet<String> validWords;
+    private final boolean[] operations;
+    private final HashMap<String, Vertex> map;
 
-    public WordGraph(HashSet<String> validWords) {
+    public WordGraph(HashSet<String> validWords, boolean[] operations) {
         this.validWords = validWords;
+        this.operations = operations;
         this.map = new HashMap<>();
 
         for (String word : validWords) {
             Vertex v = new Vertex(word);
             map.put(word, v);
-            v.addAllAdjacent(getAdjacent(word));
         }
+
+        for (Vertex v : map.values()) {
+            v.setAdjacent(getAdjacent(v.word()));
+        }
+    }
+
+    public HashSet<String> validWords() {
+        return validWords;
+    }
+
+    public HashMap<String, Vertex> map() {
+        return map;
     }
 
     private HashSet<Vertex> getAdjacent(String word) {
@@ -27,20 +40,26 @@ public class WordGraph {
         HashSet<String> adjacent = new HashSet<>();
 
         for (int ichar = 0; ichar < chars.size(); ichar++) {
-            ArrayList<Character> rmAdjacent = new ArrayList<>(chars);
-            rmAdjacent.remove(ichar);
-            adjacent.add(charArrayToString(rmAdjacent));
-            for (char letter : alphabet) {
-                ArrayList<Character> setAdjacent = new ArrayList<>(chars);
-                setAdjacent.set(ichar, letter);
-                adjacent.add(charArrayToString(setAdjacent));
+            if (operations[0]) {
+                ArrayList<Character> rmAdjacent = new ArrayList<>(chars);
+                rmAdjacent.remove(ichar);
+                adjacent.add(charArrayToString(rmAdjacent));
+            }
+            if (operations[1]) {
+                for (char letter : alphabet) {
+                    ArrayList<Character> setAdjacent = new ArrayList<>(chars);
+                    setAdjacent.set(ichar, letter);
+                    adjacent.add(charArrayToString(setAdjacent));
+                }
             }
         }
-        for (int ipos = 0; ipos < chars.size() + 1; ipos++) {
-            for (char letter : alphabet) {
-                ArrayList<Character> addAdjacent = new ArrayList<>(chars);
-                addAdjacent.add(ipos, letter);
-                adjacent.add(charArrayToString(addAdjacent));
+        if (operations[2]) {
+            for (int ipos = 0; ipos < chars.size() + 1; ipos++) {
+                for (char letter : alphabet) {
+                    ArrayList<Character> addAdjacent = new ArrayList<>(chars);
+                    addAdjacent.add(ipos, letter);
+                    adjacent.add(charArrayToString(addAdjacent));
+                }
             }
         }
 
@@ -50,7 +69,7 @@ public class WordGraph {
                 validAdjacent.add(map.get(adj));
             }
         }
-
+        validAdjacent.remove(map.get(word));
         return validAdjacent;
     }
 
