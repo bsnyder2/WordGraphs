@@ -8,6 +8,12 @@ public class WordGraph {
     private final boolean[] operations;
     private final HashMap<String, Vertex> map;
 
+    /**
+     * Constructs a WordGraph.
+     *
+     * @param validWords
+     * @param operations
+     */
     public WordGraph(HashSet<String> validWords, boolean[] operations) {
         this.validWords = validWords;
         this.operations = operations;
