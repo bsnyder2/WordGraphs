@@ -16,20 +16,26 @@ body {
 
 #title {
     margin: 0px;
-    font-size: 20px;
+    font-size: 25px;
     padding-bottom: 10px;
     text-align: center;
 }
 
 #inputs {
-    padding: 10px;
+    padding: 0px;
 }
 
 #fields * {
-    padding: 5px 10px;
+    padding: 8px 20px 6px 8px;
     width: 100px;
-    border-color: light-grey;
-    border-radius: 5000px;
+    background-color: whitesmoke;
+    border-color: grey;
+    border-width: 0px;
+    border-bottom-width: 2px;
+}
+
+::placeholder {
+    font-family: "Segoe UI", "Lucida Grande";
 }
 
 #checkboxes {
@@ -37,7 +43,9 @@ body {
 }
 
 button {
-    padding: 5px;
-    border-color: light-grey;
-    border-radius: 5000px;
+    margin-top: 20px;
+    padding: 5px 10px;
+    border-color: lightgrey;
+    border-width: 1px;
+    font-family: inherit;
 }
