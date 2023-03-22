@@ -1,51 +1,59 @@
 body {
     background-color: whitesmoke;
     font-family: "Segoe UI", "Lucida Grande", sans-serif;
+    text-align: center;
+}
+
+h1 {
+    margin: 0 0 10px 0;
 }
 
 #container {
-    width: 400px;
     margin: auto;
-    padding: 20px;
-    text-align: center;
+    padding: 10px;
+    width: 400px;
 
     background-color: white;
+    border-radius: 10px;
     box-shadow: 2px 2px 5px lightgrey;
-    border-radius: 5px;
-}
 
-#title {
-    margin: 0px;
-    font-size: 25px;
-    padding-bottom: 10px;
-    text-align: center;
 }
 
 #inputs {
-    padding: 0px;
-}
-
-#fields * {
-    padding: 8px 20px 6px 8px;
-    width: 100px;
-    background-color: whitesmoke;
-    border-color: grey;
-    border-width: 0px;
-    border-bottom-width: 2px;
-}
-
-::placeholder {
-    font-family: "Segoe UI", "Lucida Grande";
+    margin: 10px;
 }
 
 #checkboxes {
-    padding: 5px;
+    margin: 10px;
+    user-select: none;
+}
+
+#button {
+    margin: 10px;
+}
+
+input[type="text"] {
+    margin: 0 5px;
+    padding: 4px 8px 2px 8px;
+    width: 100px;
+
+    background-color: whitesmoke;
+    font-family: inherit;
+    font-size: inherit;
+    border-width: 0 0 2px 0;
+
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: steelblue;
 }
 
 button {
-    margin-top: 20px;
-    padding: 5px 10px;
-    border-color: lightgrey;
-    border-width: 1px;
+    padding: 4px 8px;
+
+    color: steelblue;
     font-family: inherit;
+    font-size: inherit;
+    border-width: 0;
 }

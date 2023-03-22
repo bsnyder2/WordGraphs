@@ -7,23 +7,26 @@
 </head>
 
 <body>
-    <br><p id="title"><strong>WordGraphs</strong></p>
+    <h1>WordGraphs</h1>
 
     <div id="container">
         <div id="inputs">
-            <div id="fields">
-                <input type="text" placeholder="Word 1" size="10">
-                <input type="text" placeholder="Word 2" size="10"><br>
-            </div>
+            <label for="word1"></label>
+            <input id="word1" type="text" placeholder="Word 1">
+            <label for="word2"></label>
+            <input id="word2" type="text" placeholder="Word 2"><br>
+        </div>
 
-            <div id="checkboxes">
-                <input id="ee" type="checkbox">
-                <label>Set</label>
-                <input type="checkbox">
-                <label>Add</label>
-                <input type="checkbox">
-                <label>Remove</label><br>
-            </div>
+        <div id="checkboxes">
+            <input id="set" type="checkbox">
+            <label for="set">Set</label>
+            <input id="add" type="checkbox">
+            <label for="add">Add</label>
+            <input id="remove" type="checkbox">
+            <label for="remove">Remove</label><br>
+        </div>
+
+        <div id="button">
             <button>Find connection</button>
         </div>
     </div>
