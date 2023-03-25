@@ -11,10 +11,10 @@
 
     <div id="container">
         <div id="inputs">
-            <label for="word1"></label>
-            <input id="word1" type="text" placeholder="Word 1">
-            <label for="word2"></label>
-            <input id="word2" type="text" placeholder="Word 2"><br>
+            <label for="start"></label>
+            <input id="start" type="text" placeholder="Word 1">
+            <label for="end"></label>
+            <input id="end" type="text" placeholder="Word 2"><br>
         </div>
 
         <div id="checkboxes">
@@ -26,10 +26,14 @@
             <label for="remove">Remove</label><br>
         </div>
 
-        <div id="button">
-            <button>Find connection</button>
+        <div id="buttons">
+            <button id="submit">Find connection</button>
+            <button id="check">Check</buttonn>
         </div>
     </div>
+
+    <h1 id="output">Hello</h1>
+    <script src="scripts/graph.js"></script>
 </body>
 
 </html>
