@@ -60,13 +60,6 @@ function getAdjacent(word, g) {
 }
 
 function BFS(t) {
-    if (!t.graph.validWords.has(t.startWord)) {
-        return 2;
-    }
-    if (!t.graph.validWords.has(t.endWord)) {
-        return 3;
-    }
-
     const queue = [];
     const visited = new Set();
 
@@ -109,15 +102,16 @@ async function main() {
     let g = new WordGraph(validWords, null);
 
     const submit = document.getElementById("submit");
-    submit.addEventListener("click", function() {
+    submit.addEventListener("click", function () {
         g = onClick(g);
     }
-        );
+    );
 }
 
 function logResult(result, t) {
     const output = document.getElementById("output");
-    switch(result) {
+
+    switch (result) {
         case 0:
             output.innerText += " \u{2705}";
             output.style.color = "green";
@@ -127,6 +121,9 @@ function logResult(result, t) {
             output.style.color = "red";
             break;
         case 2:
+            output.innerText += " \u{26A0}"
+            output.style.color = "orange";
+        case 3:
             output.innerText += " \u{26A0}"
             output.style.color = "orange";
     }
@@ -152,6 +149,33 @@ function logResult(result, t) {
     output.innerText += "\n" + display;
 }
 
+
+function possible_DOCS(ops) {
+    /*
+    If s == e, a path can always be found. Additionally,
+
+                     |  len(s) == len(e)*  |  len(s) < len(e)  |  len(s) > len(e)  |
+    _________________|_____________________|___________________|___________________|__
+    No operations    |  N                  |  N                |  N                |
+    _________________|_____________________|___________________|___________________|__
+    Set              |  Y                  |  N                |  N                |
+    _________________|_____________________|___________________|___________________|__
+    Add              |  N                  |  Y                |  N                |
+    _________________|_____________________|___________________|___________________|__
+    Remove           |  N                  |  N                |  Y                |
+    _________________|_____________________|___________________|___________________|__
+    Set, add         |  Y                  |  Y                |  N                |
+    _________________|_____________________|___________________|___________________|__
+    Set, remove      |  Y                  |  N                |  Y                |
+    _________________|_____________________|___________________|___________________|__
+    Add, remove      |  Y                  |  Y                |  Y                |
+    _________________|_____________________|___________________|___________________|__
+    Set, add, remove |  Y                  |  Y                |  Y                |
+
+    * excluding s == e
+    */
+}
+
 function onClick(g) {
     const startWord = document.getElementById("start").value.toLowerCase();
     const endWord = document.getElementById("end").value.toLowerCase();
@@ -159,6 +183,8 @@ function onClick(g) {
     const output = document.getElementById("output");
     output.innerText = `${startWord} -> ${endWord}`;
 
+
+    // Check for new operations
     const newops = [false, false, false];
     if (document.getElementById("set").checked) {
         newops[0] = true;
@@ -170,44 +196,50 @@ function onClick(g) {
         newops[2] = true;
     }
 
-    let needsRefresh = false;
+    let isNewInput = false;
     if (g.ops == null || g.ops.toString() != newops.toString()) {
-        console.log("refresh");
-        needsRefresh = true;
+        isNewInput = true;
         g.ops = newops;
     }
 
-    if ((!g.ops[0] && !g.ops[1] && !g.ops[2]) ||
-        (!g.ops[1] && !g.ops[2]
-        && startWord.length != endWord.length) ||
-        (g.ops[0] && g.ops[1] && !g.ops[2]
-        && startWord.length > endWord.length) ||
-        (!g.ops[0] && !g.ops[1] && g.ops[2]
-        && startWord.length < endWord.length) ||
-        (!g.ops[0] && (!g.ops[1] || !g.ops[2])
-        && startWord.length == endWord.length)) {
-            // console.log("Short circuit:");
-            // console.log(`startWord ${startWord} has length ${startWord.length}`);
-            // console.log(`endWord ${endWord} has length ${endWord.length}`);
-            // console.log(`Set valid: ${g.ops[0]}`)
-            // console.log(`Add valid: ${g.ops[1]}`)
-            // console.log(`Remove valid: ${g.ops[2]}`)
-            // console.log("\n");
 
-
-
-            logResult(2, null);
-            return g;
+    if (!g.validWords.has(startWord)) {
+        logResult(2, null);
     }
-    if (needsRefresh) {
+    if (!g.validWords.has(endWord)) {
+        logResult(3, null);
+    }
+
+
+    startLen = startWord.length;
+    endLen = endWord.length;
+
+
+    // reverse this with demorgans laws
+    if ((startWord == endWord) ||
+        ((startLen == endLen) && (g.ops[0] || (g.ops[1] && g.ops[2]))) ||
+        ((startLen < endLen) && g.ops[1]) ||
+        ((startLen > endLen) && g.ops[2])) {
+        console.log("VALID");
+    }
+    else {
+        console.log("NOT VALID");
+        logResult(2, null);
+        return g;
+    }
+
+    if (isNewInput) {
+        console.log("Refresh");
         g = buildGraph(g.validWords, g.ops);
     }
 
     const t = new WordTrace(g, startWord, endWord, g.ops);
-
     logResult(BFS(t), t);
+
+
+
+
     return g;
-    
 }
 
 
