@@ -9,7 +9,8 @@
 <body>
     <h1>WordGraphs</h1>
 
-    <div id="container">
+    <div class="container">
+        <div id="overlay" hidden></div>
         <div id="inputs">
             <label for="start"></label>
             <input id="start" type="text" placeholder="Word 1">
@@ -26,9 +27,13 @@
             <label for="remove">Remove</label><br>
         </div>
 
-        <div id="buttons">
+        <div id="button">
             <button id="submit">Find connection</button>
         </div>
+    </div>
+
+    <div class="container" hidden>
+
     </div>
 
     <h1 id="output"></h1>
