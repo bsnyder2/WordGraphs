@@ -18,7 +18,6 @@ function WordTrace(graph, startWord, endWord, ops) {
 }
 
 async function loadWords(filename) {
-    console.log("Loading words...");
     const res = await fetch(filename);
     const text = await res.text();
     return new Set(text.split("\n"));
@@ -102,8 +101,8 @@ async function main() {
     let g = new WordGraph(validWords, null);
 
     const submit = document.getElementById("submit");
-    submit.addEventListener("click", function () {
-        g = onClick(g);
+    submit.addEventListener("click", async function () {
+        g = await submitClick(g);
     }
     );
 }
@@ -123,9 +122,11 @@ function logResult(result, t) {
         case 2:
             output.innerText += " \u{26A0}"
             output.style.color = "orange";
+            break;
         case 3:
             output.innerText += " \u{26A0}"
             output.style.color = "orange";
+            break;
     }
 
     if (t == null) {
@@ -150,33 +151,7 @@ function logResult(result, t) {
 }
 
 
-function possible_DOCS(ops) {
-    /*
-    If s == e, a path can always be found. Additionally,
-
-                     |  len(s) == len(e)*  |  len(s) < len(e)  |  len(s) > len(e)  |
-    _________________|_____________________|___________________|___________________|__
-    No operations    |  N                  |  N                |  N                |
-    _________________|_____________________|___________________|___________________|__
-    Set              |  Y                  |  N                |  N                |
-    _________________|_____________________|___________________|___________________|__
-    Add              |  N                  |  Y                |  N                |
-    _________________|_____________________|___________________|___________________|__
-    Remove           |  N                  |  N                |  Y                |
-    _________________|_____________________|___________________|___________________|__
-    Set, add         |  Y                  |  Y                |  N                |
-    _________________|_____________________|___________________|___________________|__
-    Set, remove      |  Y                  |  N                |  Y                |
-    _________________|_____________________|___________________|___________________|__
-    Add, remove      |  Y                  |  Y                |  Y                |
-    _________________|_____________________|___________________|___________________|__
-    Set, add, remove |  Y                  |  Y                |  Y                |
-
-    * excluding s == e
-    */
-}
-
-function onClick(g) {
+async function submitClick(g) {
     const startWord = document.getElementById("start").value.toLowerCase();
     const endWord = document.getElementById("end").value.toLowerCase();
 
@@ -202,12 +177,13 @@ function onClick(g) {
         g.ops = newops;
     }
 
-
     if (!g.validWords.has(startWord)) {
         logResult(2, null);
+        return g;
     }
     if (!g.validWords.has(endWord)) {
         logResult(3, null);
+        return g;
     }
 
 
@@ -216,36 +192,35 @@ function onClick(g) {
 
 
     // reverse this with demorgans laws
-    if ((startWord == endWord) ||
+    if (!((startWord == endWord) ||
         ((startLen == endLen) && (g.ops[0] || (g.ops[1] && g.ops[2]))) ||
         ((startLen < endLen) && g.ops[1]) ||
-        ((startLen > endLen) && g.ops[2])) {
-        console.log("VALID");
-    }
-    else {
-        console.log("NOT VALID");
+        ((startLen > endLen) && g.ops[2]))) {
+        console.log("INVALID");
         logResult(2, null);
         return g;
     }
+    console.log("VALID");
 
     if (isNewInput) {
         console.log("Refresh");
-        g = buildGraph(g.validWords, g.ops);
+        const overlay = document.getElementById("overlay");
+        overlay.hidden = false;
+        g = await buildGraph(g.validWords, g.ops);
+        overlay.hidden = true;
     }
 
     const t = new WordTrace(g, startWord, endWord, g.ops);
     logResult(BFS(t), t);
 
-
-
-
     return g;
 }
 
+async function buildGraph(validWords, ops) {
 
-function buildGraph(validWords, ops) {
+
+
     const g = new WordGraph(validWords, ops);
-
 
 
     console.log("Generating graph...");
@@ -254,12 +229,36 @@ function buildGraph(validWords, ops) {
         g.map.set(word, v);
     }
 
+    return await run(g);
+}
+
+
+
+
+async function run(g) {
+    const progressBar = document.getElementById("progressbar");
+
+    let i = 0;
+    let f = g.map.size;
+    let marker = Math.floor(f / 100);
+    let j = 0;
+
     for (const v of g.map.values()) {
         v.adjacent = getAdjacent(v.word, g);
+
+        if (i % marker == 0) {
+            progressBar.style.width = j + "%";    
+            j++;
+            // force style attribute to update
+            await new Promise(r => setTimeout(r, 1));
+        }
+        i++;
     }
+    
     console.log("Graph generated");
     return g;
-
 }
+
+
 
 main();
