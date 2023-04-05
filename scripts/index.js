@@ -112,19 +112,23 @@ function logResult(result, t) {
 
     switch (result) {
         case 0:
-            output.innerText += " \u{2705}";
+            output.innerText += "\n\u{2705}";
             output.style.color = "green";
             break;
         case 1:
-            output.innerText += " \u{274C}";
+            output.innerText += "\n\u{274C}";
             output.style.color = "red";
             break;
         case 2:
-            output.innerText += " \u{26A0}"
+            output.innerText += "\n\u{26A0} Word 1 is invalid"
             output.style.color = "orange";
             break;
         case 3:
-            output.innerText += " \u{26A0}"
+            output.innerText += "\n\u{26A0} Word 2 is invalid"
+            output.style.color = "orange";
+            break;
+        case 4:
+            output.innerText += "\n\u{26A0} Bad conditions"
             output.style.color = "orange";
             break;
     }
@@ -143,7 +147,7 @@ function logResult(result, t) {
 
     let display = "";
     for (let i = 0; i < distance; i++) {
-        display += trace.pop() + " -->\n";
+        display += trace.pop() + " \u2192\n";
     }
     display += `${trace.pop()} (${distance})`;
 
@@ -156,7 +160,7 @@ async function submitClick(g) {
     const endWord = document.getElementById("end").value.toLowerCase();
 
     const output = document.getElementById("output");
-    output.innerText = `${startWord} -> ${endWord}`;
+    output.innerText = `${startWord} \u2192 ${endWord}`;
 
 
     // Check for new operations
@@ -171,9 +175,10 @@ async function submitClick(g) {
         newops[2] = true;
     }
 
-    let isNewInput = false;
-    if (g.ops == null || g.ops.toString() != newops.toString()) {
-        isNewInput = true;
+    let needsRebuild = false;
+    // If nothing in map, or operations have changed
+    if (g.map.size == 0 || g.ops.toString() != newops.toString()) {
+        needsRebuild = true;
         g.ops = newops;
     }
 
@@ -197,12 +202,12 @@ async function submitClick(g) {
         ((startLen < endLen) && g.ops[1]) ||
         ((startLen > endLen) && g.ops[2]))) {
         console.log("INVALID");
-        logResult(2, null);
+        logResult(4, null);
         return g;
     }
     console.log("VALID");
 
-    if (isNewInput) {
+    if (needsRebuild) {
         console.log("Refresh");
         const overlay = document.getElementById("overlay");
         overlay.hidden = false;
@@ -247,14 +252,14 @@ async function run(g) {
         v.adjacent = getAdjacent(v.word, g);
 
         if (i % marker == 0) {
-            progressBar.style.width = j + "%";    
+            progressBar.style.width = j + "%";
             j++;
             // force style attribute to update
             await new Promise(r => setTimeout(r, 1));
         }
         i++;
     }
-    
+
     console.log("Graph generated");
     return g;
 }
