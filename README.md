@@ -1,28 +1,19 @@
 # WordGraphs
-Tools for examining word edit distance with graphs
+Tool for examining word edit distance with graphs
+Created by Ben Snyder
 
 ## To do
-
-code quality:
-use function prototypes as they should be used!!
-i should only have one js file
-
-
-progress bar
-add mouseover definitions from free api
-
-
-
-add ? button to describe different edit distance types - these are not standard levenshtein/hamming, they only allow for valid intermediates
-
-and be able to add valid individual words to the dataset! add another field for this
-also, allow user to upload dictionary
-
-don't allow symbol entry
-should be able to press enter to find connection
-
-
-
-
-
-add transposition as an operation
+- Code quality: use function prototypes properly
+- Add ? pane to describe how the app works
+	- How the edit distances found differ from Levenshtein/Hamming
+	- Link to Wikipedia pages for Levenshtein and Hamming distances
+	- Allow switch between 58k and 370k wordsets, and regenerate graph on next submit
+- Input boxes
+	- Put input labels above box rather than placeholder
+	- Don't allow symbol entry
+	- Red highlight on field that throws error and describe the problem
+	- Can press enter key to submit words
+- Attractive tooltip/mouseover definitions from dictionary API
+	- Display on both mouseover and click to allow for mobile devices
+- Allow user to add individual words to the dictionary, or upload their own from CSV
+- Add transposition as an operation
