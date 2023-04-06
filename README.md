@@ -1,5 +1,6 @@
 # WordGraphs
 Tool for examining word edit distance with graphs
+
 Created by Ben Snyder
 
 ## To do
