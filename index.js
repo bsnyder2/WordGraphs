@@ -107,7 +107,7 @@ async function main() {
     );
 }
 
-function logResult(result, t) {
+async function logResult(result, t) {
     const output = document.getElementById("output");
 
     switch (result) {
@@ -143,13 +143,37 @@ function logResult(result, t) {
         trace.push(current.word);
         current = t.parents.get(current);
     }
-    const distance = trace.length - 1;
+    const nSteps = trace.length;
+    const distance = nSteps - 1;
+    output.innerText += ` (${distance})`
 
     let display = "";
-    for (let i = 0; i < distance; i++) {
-        display += trace.pop() + " \u2192\n";
+
+    const tracebox = document.getElementById("trace");
+
+    for (let i = 0; i < nSteps; i++) {
+        const step = document.createElement("div");
+        step.className = "step";
+        const word = trace.pop()
+        const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+        const data = await response.json();
+        // API CALL
+        console.log(data);
+
+        let d = "";
+        for (i of data) {
+            d += i.meanings[0].definitions[0].definition + "\n";
+        }
+
+        tracebox.setAttribute("title", d);
+        step.innerText = word;
+
+        tracebox.appendChild(step);
+
+        // display += thing + " \u2192\n";
     }
-    display += `${trace.pop()} (${distance})`;
+
+    // display += `${trace.pop()} (${distance})`;
 
     output.innerText += "\n" + display;
 }
@@ -158,6 +182,11 @@ function logResult(result, t) {
 async function submitClick(g) {
     const startWord = document.getElementById("start").value.toLowerCase();
     const endWord = document.getElementById("end").value.toLowerCase();
+    
+    const outputbox = document.getElementById("outputbox");
+    outputbox.hidden = false;
+    const tracebox = document.getElementById("trace");
+    tracebox.innerHTML = "";
 
     const output = document.getElementById("output");
     output.innerText = `${startWord} \u2192 ${endWord}`;
@@ -201,14 +230,11 @@ async function submitClick(g) {
         ((startLen == endLen) && (g.ops[0] || (g.ops[1] && g.ops[2]))) ||
         ((startLen < endLen) && g.ops[1]) ||
         ((startLen > endLen) && g.ops[2]))) {
-        console.log("INVALID");
         logResult(4, null);
         return g;
     }
-    console.log("VALID");
 
     if (needsRebuild) {
-        console.log("Refresh");
         const overlay = document.getElementById("overlay");
         overlay.hidden = false;
         g = await buildGraph(g.validWords, g.ops);
@@ -228,7 +254,6 @@ async function buildGraph(validWords, ops) {
     const g = new WordGraph(validWords, ops);
 
 
-    console.log("Generating graph...");
     for (const word of validWords) {
         const v = new Vertex(word);
         g.map.set(word, v);
@@ -260,7 +285,6 @@ async function run(g) {
         i++;
     }
 
-    console.log("Graph generated");
     return g;
 }
 
