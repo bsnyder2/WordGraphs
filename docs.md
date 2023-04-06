@@ -1,10 +1,10 @@
-Let s = startWord, e = endWord.
-If s == e, a path can always be found.
-If s != e and the input conditions are valid, a path may be found, but it is not guaranteed.
+Let s = startWord, e = endWord.  
+If s == e, a path can always be found.  
+If s != e and the input conditions are valid, a path may be found, but it is not guaranteed.  
 If s != e and the input conditions are invalid, no path can be found.
 
-P represents valid input conditions.
-- represents invalid input conditions.
+P represents valid input conditions.  
+\- represents invalid input conditions.
 
 |                  | len(s) == len(e)* | len(s) < len(e) | len(s) > len(e) |
 |------------------|-------------------|-----------------|-----------------|
@@ -17,4 +17,4 @@ P represents valid input conditions.
 | Add, remove      | P                 | P               | P               |
 | Set, add, remove | P                 | P               | P               |
 
-* excluding s == e
+\* excluding s == e
