@@ -108,34 +108,40 @@ async function main() {
 }
 
 async function logResult(result, t) {
-    const output = document.getElementById("output");
+    const goal = document.getElementById("goal");
+    const status = document.getElementById("status");
+    const outputbox = document.getElementById("outputbox");
 
     switch (result) {
         case 0:
-            output.innerText += "\n\u{2705}";
-            output.style.color = "green";
+            status.innerText = "\u{2705}";
+            goal.style.color = "green";
             break;
         case 1:
-            output.innerText += "\n\u{274C}";
-            output.style.color = "red";
-            break;
+            status.innerText = "\u{274C}";
+            goal.style.color = "red";
+            outputbox.hidden = false;
+            return;
         case 2:
-            output.innerText += "\n\u{26A0} Word 1 is invalid"
-            output.style.color = "orange";
-            break;
+            status.innerText = "\u{26A0} Word 1"
+            goal.style.color = "orange";
+            outputbox.hidden = false;
+            return;
         case 3:
-            output.innerText += "\n\u{26A0} Word 2 is invalid"
-            output.style.color = "orange";
-            break;
+            status.innerText = "\u{26A0} Word 2"
+            goal.style.color = "orange";
+            outputbox.hidden = false;
+            return;
         case 4:
-            output.innerText += "\n\u{26A0} Bad conditions"
-            output.style.color = "orange";
-            break;
+            status.innerText = "\u{26A0}"
+            goal.style.color = "orange";
+            outputbox.hidden = false;
+            return;
     }
 
-    if (t == null) {
-        return;
-    }
+    // if (t == null) {
+    //     return;
+    // }
 
     const trace = [];
     let current = t.graph.map.get(t.endWord);
@@ -145,9 +151,10 @@ async function logResult(result, t) {
     }
     const nSteps = trace.length;
     const distance = nSteps - 1;
-    output.innerText += ` (${distance})`
+    
+    goal.innerText += ` (${distance})`;
 
-    let display = "";
+    console.log(nSteps);
 
     const tracebox = document.getElementById("trace");
 
@@ -157,25 +164,20 @@ async function logResult(result, t) {
         const word = trace.pop()
         const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
         const data = await response.json();
-        // API CALL
-        console.log(data);
 
-        let d = "";
-        for (i of data) {
-            d += i.meanings[0].definitions[0].definition + "\n";
+        if (data.title == "No Definitions Found") {
+            step.setAttribute("title", "No definition found.")
+        } else {
+            const partOfSpeech = data[0].meanings[0].partOfSpeech;
+            const definition = data[0].meanings[0].definitions[0].definition;
+            step.setAttribute("title", partOfSpeech + "\n" + definition);
         }
 
-        tracebox.setAttribute("title", d);
-        step.innerText = word;
-
+        step.innerHTML = word;
         tracebox.appendChild(step);
-
-        // display += thing + " \u2192\n";
     }
 
-    // display += `${trace.pop()} (${distance})`;
-
-    output.innerText += "\n" + display;
+    outputbox.hidden = false;
 }
 
 
@@ -188,8 +190,8 @@ async function submitClick(g) {
     const tracebox = document.getElementById("trace");
     tracebox.innerHTML = "";
 
-    const output = document.getElementById("output");
-    output.innerText = `${startWord} \u2192 ${endWord}`;
+    const goal = document.getElementById("goal");
+    goal.innerText = `${startWord} \u2192 ${endWord}`;
 
 
     // Check for new operations
@@ -234,6 +236,7 @@ async function submitClick(g) {
         return g;
     }
 
+    outputbox.hidden = true;
     if (needsRebuild) {
         const overlay = document.getElementById("overlay");
         overlay.hidden = false;
