@@ -197,65 +197,71 @@ async function logResult(result, t) {
     const status = document.getElementById("status");
     const outputbox = document.getElementById("outputbox");
 
-    switch (result) {
-        case 0:
-            status.innerText = "\u{2705}";
-            goal.style.color = "green";
-            break;
-        case 1:
-            status.innerText = "\u{274C}";
-            goal.style.color = "red";
-            outputbox.hidden = false;
-            return;
-        case 2:
-            status.innerText = "\u{26A0} Word 1"
-            goal.style.color = "orange";
-            outputbox.hidden = false;
-            return;
-        case 3:
-            status.innerText = "\u{26A0} Word 2"
-            goal.style.color = "orange";
-            outputbox.hidden = false;
-            return;
-        case 4:
-            status.innerText = "\u{26A0}"
-            goal.style.color = "orange";
-            outputbox.hidden = false;
-            return;
-    }
+    const cat = document.createElement("img");
+    cat.id = "cat";
+    cat.setAttribute("src", "cat.jpg");
+    cat.style.zoom = 0.5;
+    outputbox.appendChild(cat);
 
-    // Get list of word strings
-    const trace = [];
-    let current = t.graph.map.get(t.endWord);
-    while (current != null) {
-        trace.push(current.word);
-        current = t.parents.get(current);
-    }
-    const nSteps = trace.length;
-    const distance = nSteps - 1;
-    goal.innerText += ` (${distance})`;
+    // switch (result) {
+    //     case 0:
+    //         status.innerText = "\u{2705}";
+    //         goal.style.color = "green";
+    //         break;
+    //     case 1:
+    //         status.innerText = "\u{274C}";
+    //         goal.style.color = "red";
+    //         outputbox.hidden = false;
+    //         return;
+    //     case 2:
+    //         status.innerText = "\u{26A0} Word 1"
+    //         goal.style.color = "orange";
+    //         outputbox.hidden = false;
+    //         return;
+    //     case 3:
+    //         status.innerText = "\u{26A0} Word 2"
+    //         goal.style.color = "orange";
+    //         outputbox.hidden = false;
+    //         return;
+    //     case 4:
+    //         status.innerText = "\u{26A0}"
+    //         goal.style.color = "orange";
+    //         outputbox.hidden = false;
+    //         return;
+    // }
 
-    // Put words in trace box with definition alt text
-    const tracebox = document.getElementById("tracebox");
-    for (let i = 0; i < nSteps; i++) {
-        const step = document.createElement("div");
-        step.className = "step";
-        const word = trace.pop()
+    // // Get list of word strings
+    // const trace = [];
+    // let current = t.graph.map.get(t.endWord);
+    // while (current != null) {
+    //     trace.push(current.word);
+    //     current = t.parents.get(current);
+    // }
+    // const nSteps = trace.length;
+    // const distance = nSteps - 1;
+    // goal.innerText += ` (${distance})`;
 
-        // API Call
-        const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
-        const data = await response.json();
-        if (data.title == "No Definitions Found") {
-            step.setAttribute("title", "No definition found.")
-        } else {
-            const partOfSpeech = data[0].meanings[0].partOfSpeech;
-            const definition = data[0].meanings[0].definitions[0].definition;
-            step.setAttribute("title", partOfSpeech + "\n" + definition);
-        }
+    // // Put words in trace box with definition alt text
+    // const tracebox = document.getElementById("tracebox");
+    // for (let i = 0; i < nSteps; i++) {
+    //     const step = document.createElement("div");
+    //     step.className = "step";
+    //     const word = trace.pop()
 
-        step.innerText = word;
-        tracebox.appendChild(step);
-    }
+    //     // API Call
+    //     const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+    //     const data = await response.json();
+    //     if (data.title == "No Definitions Found") {
+    //         step.setAttribute("title", "No definition found.")
+    //     } else {
+    //         const partOfSpeech = data[0].meanings[0].partOfSpeech;
+    //         const definition = data[0].meanings[0].definitions[0].definition;
+    //         step.setAttribute("title", partOfSpeech + "\n" + definition);
+    //     }
+
+    //     step.innerText = word;
+    //     tracebox.appendChild(step);
+    // }
 
     // Only show output box when all definitions fetched
     outputbox.hidden = false;
