@@ -262,7 +262,7 @@ async function logResult(result, t) {
 }
 
 async function main() {
-    const filename = "wordsets/words-370k.txt";
+    const filename = "wordsets/words-58k.txt";
     const validWords = await loadWords(filename);
 
     let g = new WordGraph(validWords, null);
